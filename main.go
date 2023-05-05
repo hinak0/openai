@@ -18,20 +18,20 @@ func main() {
 	r := bootstrap.New()
 
 	// 微信消息处理
-	r.POST("/wx", handler.ReceiveMsg)
+	r.POST("/", handler.ReceiveMsg)
 	// 用于公众号自动验证
-	r.GET("/wx", handler.WechatCheck)
+	r.GET("/", handler.WechatCheck)
 	// 用于测试 curl "http://127.0.0.1:$PORT/test"
 	r.GET("/test", handler.Test)
-	r.GET("/", handler.Test)
+	// r.GET("/", handler.Test)
 
 	// 设置日志
 	if !config.Debug {
 		SetLog()
 	}
 
-	fmt.Printf("启动服务，使用 curl 'http://127.0.0.1:%s/test?msg=你好' 测试一下吧\n", config.Http.Port)
-	if err := http.ListenAndServe(":"+config.Http.Port, r); err != nil {
+	fmt.Printf("start process success at %s:%s \n", config.Http.Addr, config.Http.Port)
+	if err := http.ListenAndServe(config.Http.Addr+":"+config.Http.Port, r); err != nil {
 		panic(err)
 	}
 }

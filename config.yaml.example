@@ -1,0 +1,39 @@
+http:
+  # 监听地址，一般不用改
+  addr: 0.0.0.0
+  # 必填: 端口号
+  port: 80
+  # 可选: 代理地址。需要你有本地或远程代理软件，举例: socks5://127.0.0.1:7890 或 7891
+  proxy:
+
+openai:
+  # 必填: KEY。 文档: https://platform.openai.com/account/api-keys
+  key: xxx
+  # 可选: 参数调节
+  params:
+    # openai的接口地址，放出来是因为有些人做了反向代理，要注意这有安全问题，谨慎使用
+    api: https://api.openai.com/v1/chat/completions
+    # 暂时请使用 gpt-3.5-turbo
+    model: gpt-3.5-turbo
+    # 提示。 可以理解为对其身份设定。 文档: https://platform.openai.com/docs/guides/chat/introduction
+    # 每个问题都会携带，注意，它也占用token消耗。
+    prompt:
+    # 影响 问题+回复的长度。  gpt-3.5模型最大4096， 非1个汉字1token
+    maxTokens: 1024
+    # 温度。 0-2 。较高的值将使输出更加随机，而较低的值将使输出更加集中和确定。
+    temperature: 0.8
+  # 限制用户问题最大长度。这个以字计算，非token.
+  maxQuestionLength: 200
+
+wechat:
+  # 必填(公众号服务). 与公众号设置保持一致
+  token: xxx
+  # 影响滚动返回结果 (5s-13s)
+  timeout: 7
+  # 用户关注时主动发送的消息
+  subscribeMsg: "关注自动发送的消息"
+  # 关键字自动回复，key是关键字,值是对应回复，支持正则
+  keyword:
+    关键字: 自动回复内容
+    # 例如
+    粉丝群|^反馈: 反馈请联系hinak0@qq.com

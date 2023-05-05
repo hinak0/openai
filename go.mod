@@ -2,10 +2,7 @@ module openai
 
 go 1.18
 
-require (
-	github.com/spf13/viper v1.15.0
-	github.com/tomatocuke/sieve v0.0.0-20230214050111-c2a0441edcdf
-)
+require github.com/spf13/viper v1.15.0
 
 require (
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
