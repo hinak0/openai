@@ -18,12 +18,12 @@ func main() {
 	r := bootstrap.New()
 
 	// 微信消息处理
-	r.POST("/wx", handler.ReceiveMsg)
+	r.POST("/", handler.ReceiveMsg)
 	// 用于公众号自动验证
-	r.GET("/wx", handler.WechatCheck)
+	r.GET("/", handler.WechatCheck)
 	// 用于测试 curl "http://127.0.0.1:$PORT/test"
 	r.GET("/test", handler.Test)
-	r.GET("/", handler.Test)
+	// r.GET("/", handler.Test)
 
 	// 设置日志
 	if !config.Debug {
