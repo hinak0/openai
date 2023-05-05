@@ -1,5 +1,7 @@
 .vscode
 .DS_Store
 build.sh
-log/*
+log/
 test.html
+config.yaml
+robot
