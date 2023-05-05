@@ -34,11 +34,11 @@ nohup ./robot 2>&1 &
 ```bash
 git clone https://github.com/hinak0/openai.git
 ```
-1. 安装依赖
+2. 安装依赖
 ```bash
 go mod tidy
 ```
-1. 编译
+3. 编译
 ```bash
 go build -o robot
 # 运行缺少依赖
