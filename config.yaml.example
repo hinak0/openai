@@ -1,4 +1,5 @@
 http:
+  addr: 0.0.0.0
   # 必填: 端口号。 如果修改，注意也修改 docker 启动命令里的端口映射。
   port: 80
   # 可选: 代理地址。需要你有本地或远程代理软件，举例: socks5://127.0.0.1:7890 或 7891
@@ -6,7 +7,7 @@ http:
 
 openai:
   # 必填: KEY。 文档: https://platform.openai.com/account/api-keys
-  key: XXX
+  key: xxx
   # 可选: 参数调节
   params:
     # openai的接口地址，放出来是因为有些人做了反向代理，要注意这有安全问题，谨慎使用
@@ -25,8 +26,12 @@ openai:
 
 wechat:
   # 必填(公众号服务). 与公众号设置保持一致
-  token: XXX
+  token: xxx
   # 影响滚动返回结果 (5s-13s)
   timeout: 7
   # 用户关注时主动发送的消息
-  subscribeMsg: 你好，我是基于ChatGPT的AI助手，有什么能帮助您的吗？
+  subscribeMsg: "关注自动发送的消息"
+  keyword:
+    正则关键字: 自动回复
+    keyword: keyword_reply
+    关键字: 回复

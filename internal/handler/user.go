@@ -15,7 +15,6 @@ import (
 
 var (
 	success  = []byte("success")
-	warn     = "警告，检测到敏感词"
 	requests sync.Map // K - 消息ID ， V - chan string
 )
 
@@ -74,10 +73,13 @@ func ReceiveMsg(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	// 敏感词检测
-	if !fiter.Check(msg.Content) {
-		warnWx := msg.GenerateEchoData(warn)
-		echo(w, warnWx)
+	// 关键字回复
+	res := fiter.Check(msg.Content)
+	if len(res) != 0 {
+		log.Println("触发关键字,Q:", msg.Content)
+		log.Println("触发关键字,A:", res)
+		echo(w, msg.GenerateEchoData(res))
+		requests.Delete(msg.MsgId)
 		return
 	}
 
@@ -93,9 +95,9 @@ func ReceiveMsg(w http.ResponseWriter, r *http.Request) {
 
 	select {
 	case result := <-ch:
-		if !fiter.Check(result) {
-			result = warn
-		}
+		// if !fiter.Check(result) {
+		// 	result = warn
+		// }
 		bs := msg.GenerateEchoData(result)
 		echo(w, bs)
 		requests.Delete(msg.MsgId)
@@ -106,8 +108,9 @@ func ReceiveMsg(w http.ResponseWriter, r *http.Request) {
 
 func Test(w http.ResponseWriter, r *http.Request) {
 	msg := r.URL.Query().Get("msg")
-	if !fiter.Check(msg) {
-		echoJson(w, "", warn)
+	res := fiter.Check(msg)
+	if len(res) != 0 {
+		echoJson(w, "", res)
 		return
 	}
 	s := openai.Query("0", msg, time.Second*5)
