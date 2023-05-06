@@ -13,10 +13,9 @@
 - [x] 支持用户语音输入。（要主动开启，设置与开发->接口权限->接收语音识别结果。已关注用户可能24小时内生效，可重新关注尝试）
 - [x] 设置代理
 - [x] prompt 提示、max_tokens、temperature 参数调节
-- [x] [敏感词](https://github.com/tomatocuke/sieve)检测及自定义添加。(不清楚这样是否降低风险。代码内置隐藏了一些敏感词，你也可以启动时在根目录添加`keyword.txt`自定义敏感词。  如有敏感词误杀，你可以向我反馈)
 - [ ] 上下文。(其实开发也不算难。主要是OpenAI不记录会话，上下文的本质是把之前的QA都作为新的参数传过去，这会叠加消耗token)
 - [ ] 用户身份验证。(待开发)
-- [ ] 关键词回复。(待开发)
+- [x] 关键词回复。
 
 ### 三、部署
 1. 获取`API_KEY`。[OpenAI](https://beta.openai.com/account/api-keys) （如果访问被拒绝，注意全局代理，打开调试，Application清除LocalStorage后刷新，实测可以）
@@ -65,12 +64,6 @@ go mod tidy
 ```bash
 go build -o robot
 # 运行缺少依赖
-GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o robot main.go
+export CGO_ENABLED=0
+go build -o robot main.go
 ```
-
-### 五、QA
-- 日志出现 `openai请求超时` <br>
-答：对openai的请求发不过去
-
-- 出现报错  `connection reset by peer` 或 `Post "https://api.openai.com/v1/chat/completions": EOF`  <br>
-答：是否使用了代理呢？ 大概率是IP被多人使用的结果，换个IP，但是部署不建议使用代理的方式，不稳定。

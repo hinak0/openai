@@ -30,8 +30,8 @@ func main() {
 		SetLog()
 	}
 
-	fmt.Printf("start process success at 0.0.0.0:%s \n", config.Http.Port)
-	if err := http.ListenAndServe(":"+config.Http.Port, r); err != nil {
+	fmt.Printf("start process success at %s:%s \n", config.Http.Addr, config.Http.Port)
+	if err := http.ListenAndServe(config.Http.Addr+":"+config.Http.Port, r); err != nil {
 		panic(err)
 	}
 }
