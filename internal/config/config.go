@@ -3,7 +3,6 @@ package config
 import (
 	"openai/internal/util"
 	"os"
-	"regexp"
 
 	"github.com/spf13/viper"
 )
@@ -41,15 +40,11 @@ var (
 	}
 
 	Wechat struct {
-		Token            string
-		Timeout          int
-		SubscribeMsg     string
-		Keyword          map[string]string
-		Keyword_Reg_List map[*regexp.Regexp]string
+		Token        string
+		Timeout      int
+		SubscribeMsg string
+		Keyword      map[string]string
 	}
-	// User struct {
-	// 	QueryTimesDaily int64
-	// }
 )
 
 func init() {
@@ -70,9 +65,6 @@ func init() {
 	viper.UnmarshalKey("openai", &OpenAI)
 	viper.UnmarshalKey("wechat", &Wechat)
 
-	// add keyword
-	Wechat.Keyword_Reg_List = compileReg(Wechat.Keyword)
-
 	if OpenAI.Key == "" {
 		util.Logger.Println("OpenAI的Key不能为空")
 		os.Exit(0)
@@ -85,13 +77,4 @@ func init() {
 	if Wechat.Timeout < 3 || Wechat.Timeout > 13 {
 		Wechat.Timeout = 8
 	}
-}
-
-func compileReg(m map[string]string) map[*regexp.Regexp]string {
-	compiled := make(map[*regexp.Regexp]string)
-	for k, v := range m {
-		r := regexp.MustCompile(k)
-		compiled[r] = v
-	}
-	return compiled
 }
