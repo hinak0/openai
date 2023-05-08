@@ -17,6 +17,15 @@ var (
 		Proxy string
 	}
 
+	Session struct {
+		Enable	bool
+		Type     string
+		Addr     string
+		Password string
+		Database int
+		Track    int
+	}
+
 	OpenAI struct {
 		Key string
 
@@ -57,6 +66,7 @@ func init() {
 
 	viper.UnmarshalKey("debug", &Debug)
 	viper.UnmarshalKey("http", &Http)
+	viper.UnmarshalKey("session", &Session)
 	viper.UnmarshalKey("openai", &OpenAI)
 	viper.UnmarshalKey("wechat", &Wechat)
 

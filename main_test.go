@@ -2,15 +2,19 @@ package main
 
 import (
 	"fmt"
-	"openai/internal/service/fiter"
+	"openai/internal/config"
+	"openai/internal/service/openai"
 	"testing"
+	"time"
 )
 
 func Test(t *testing.T) {
-	res := fiter.Check("keyword")
-	if len(res) != 0 {
-		fmt.Println(res)
-		return
+	var in string
+	for {
+		if _, err := fmt.Scanf("%s", &in); err != nil {
+		} else {
+			r := openai.Query("001", in, time.Second*time.Duration(config.Wechat.Timeout))
+			fmt.Println(r)
+		}
 	}
-	fmt.Println("no keyword match")
 }

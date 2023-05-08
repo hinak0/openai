@@ -5,3 +5,4 @@ log/
 test.html
 config.yaml
 robot
+*.log
