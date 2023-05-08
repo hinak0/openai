@@ -7,10 +7,10 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"openai/internal/config"
+	"openai/internal/util"
 	"runtime"
 	"strings"
 	"sync"
@@ -42,7 +42,7 @@ func Query(uid string, msg string, timeout time.Duration) (reply string) {
 	defer func() {
 		if err := recover(); err != nil {
 			_, file, line, _ := runtime.Caller(3)
-			log.Println("ERROR:", err, file, line)
+			util.Logger.Println("ERROR:", err, file, line)
 		}
 	}()
 	defer printLog(msg, &reply, start)
@@ -92,7 +92,7 @@ func Query(uid string, msg string, timeout time.Duration) (reply string) {
 			var err error
 			history, err = getHistory(uid)
 			if err != nil {
-				log.Println(err)
+				util.Logger.Println(err)
 				history = []requestMessageItem{}
 			}
 			// 保留最近n次对话
@@ -111,7 +111,7 @@ func Query(uid string, msg string, timeout time.Duration) (reply string) {
 		if config.Session.Enable {
 			err = setHistory(uid, history)
 			if err != nil {
-				log.Println(err)
+				util.Logger.Println(err)
 			}
 		}
 	} else {
@@ -191,7 +191,7 @@ func completions(u *user, history *[]requestMessageItem) error {
 
 			if err := recover(); err != nil {
 				_, file, line, _ := runtime.Caller(3)
-				log.Println("ERROR:", err, file, line)
+				util.Logger.Println("ERROR:", err, file, line)
 			}
 		}()
 
@@ -204,7 +204,6 @@ func completions(u *user, history *[]requestMessageItem) error {
 
 		for scanner.Scan() {
 			bs := scanner.Bytes()
-			// fmt.Println(string(bs))
 			if len(bs) > 100 {
 				x++
 				bs = bs[6:]
@@ -214,9 +213,6 @@ func completions(u *user, history *[]requestMessageItem) error {
 					continue
 				}
 				tokenContent := r.Choices[0].Delta.Content
-				// if config.Debug {
-				// 	fmt.Print(tokenContent)
-				// }
 
 				u.answer.mu.Lock()
 				if u.question.counter-u.answer.counter <= 1 {
@@ -228,10 +224,6 @@ func completions(u *user, history *[]requestMessageItem) error {
 				}
 			}
 		}
-
-		// if config.Debug {
-		// 	fmt.Println("\n问题结束:", u.question.value, "回答完成， 行数：", x)
-		// }
 
 	}(u, respBody)
 
@@ -264,7 +256,7 @@ func postApi(msg string, history *[]requestMessageItem) (io.ReadCloser, error) {
 }
 
 func printLog(question string, answer *string, start time.Time) {
-	log.Printf(
+	util.Logger.Printf(
 		"用时:%ds \nQ: %s \nA: %s\n\n",
 		int(time.Since(start).Seconds()),
 		question,

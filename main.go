@@ -1,18 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 	"openai/bootstrap"
 	"openai/internal/config"
 	"openai/internal/handler"
-	"os"
+	"openai/internal/util"
 )
-
-func init() {
-
-}
 
 func main() {
 	r := bootstrap.New()
@@ -23,25 +17,9 @@ func main() {
 	r.GET("/", handler.WechatCheck)
 	// 用于测试 curl "http://127.0.0.1:$PORT/test"
 	r.GET("/test", handler.Test)
-	// r.GET("/", handler.Test)
 
-	// 设置日志
-	if !config.Debug {
-		SetLog()
-	}
-
-	fmt.Printf("start process success at %s:%s \n", config.Http.Addr, config.Http.Port)
+	util.Logger.Printf("程序开始监听 %s:%s \n", config.Http.Addr, config.Http.Port)
 	if err := http.ListenAndServe(config.Http.Addr+":"+config.Http.Port, r); err != nil {
-		panic(err)
+		util.Logger.Fatalln(err)
 	}
-}
-
-func SetLog() {
-	file := "log.log"
-	f, err := os.OpenFile(file, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0755)
-	if err != nil {
-		panic(err)
-	}
-	log.SetOutput(f)
-	fmt.Println("查看日志请使用 tail -f " + file)
 }
