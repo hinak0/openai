@@ -9,6 +9,7 @@ import (
 	"openai/internal/service/fiter"
 	"openai/internal/service/openai"
 	"openai/internal/service/wechat"
+	"openai/internal/util"
 	"sync"
 	"time"
 )
@@ -31,7 +32,7 @@ func WechatCheck(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Println("此接口为公众号验证，不应该被手动调用，公众号接入校验失败")
+	util.Logger.Println("非法访问校验接口")
 }
 
 // https://developers.weixin.qq.com/doc/offiaccount/Message_Management/Passive_user_reply_message.html
@@ -57,12 +58,12 @@ func ReceiveMsg(w http.ResponseWriter, r *http.Request) {
 			log.Printf("未实现的事件%s\n", msg.Event)
 			echo(w, success)
 		case "subscribe":
-			log.Println("新增关注:", msg.FromUserName)
+			util.Logger.Println("新增关注:", msg.FromUserName)
 			b := msg.GenerateEchoData(config.Wechat.SubscribeMsg)
 			echo(w, b)
 			return
 		case "unsubscribe":
-			log.Println("取消关注:", msg.FromUserName)
+			util.Logger.Println("取消关注:", msg.FromUserName)
 			echo(w, success)
 			return
 		}
@@ -76,8 +77,8 @@ func ReceiveMsg(w http.ResponseWriter, r *http.Request) {
 	// 关键字回复
 	res := fiter.Check(msg.Content)
 	if len(res) != 0 {
-		log.Println("触发关键字,Q:", msg.Content)
-		log.Println("触发关键字,A:", res)
+		util.Logger.Println("触发关键字,Q:", msg.Content)
+		util.Logger.Println("触发关键字,A:", res)
 		echo(w, msg.GenerateEchoData(res))
 		requests.Delete(msg.MsgId)
 		return

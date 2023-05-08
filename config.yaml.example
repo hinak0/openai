@@ -1,3 +1,4 @@
+debug: false
 http:
   # 监听地址，一般不用改
   addr: 0.0.0.0
