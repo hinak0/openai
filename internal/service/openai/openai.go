@@ -86,10 +86,33 @@ func Query(uid string, msg string, timeout time.Duration) (reply string) {
 		u.question.counter++
 		u.question.value = msg
 
+		// 历史记录
+		history := []requestMessageItem{}
+		if config.Session.Enable {
+			var err error
+			history, err = getHistory(uid)
+			if err != nil {
+				log.Println(err)
+				history = []requestMessageItem{}
+			}
+			// 保留最近n次对话
+			n := config.Session.Track
+			l := len(history)
+			if l > n {
+				history = history[l-n:]
+			}
+		}
 		// 发起请求
-		err := completions(u)
+		err := completions(u, history)
 		if err != nil {
 			return err.Error()
+		}
+		// 存储历史提问
+		if config.Session.Enable {
+			err = setHistory(uid, history)
+			if err != nil {
+				log.Println(err)
+			}
 		}
 	} else {
 		if u.question.counter == u.answer.counter && u.answer.buffer.Len() == 0 {
@@ -152,9 +175,9 @@ func Query(uid string, msg string, timeout time.Duration) (reply string) {
 
 // https://beta.openai.com/docs/api-reference/making-requests
 // 同步返回ch，异步读取数据流
-func completions(u *user) error {
+func completions(u *user, history []requestMessageItem) error {
 
-	respBody, err := postApi(u.question.value)
+	respBody, err := postApi(u.question.value, history)
 	if err != nil {
 		return err
 	}
@@ -215,8 +238,8 @@ func completions(u *user) error {
 	return nil
 }
 
-func postApi(msg string) (io.ReadCloser, error) {
-	r := newRequest(msg)
+func postApi(msg string, history []requestMessageItem) (io.ReadCloser, error) {
+	r := newRequest(msg, history)
 	bs, _ := json.Marshal(&r)
 
 	client := &http.Client{Timeout: time.Second * 200}

@@ -17,18 +17,16 @@ type requestMessageItem struct {
 	Content string `json:"content"`
 }
 
-func newRequest(msg string) (r request) {
+func newRequest(msg string, history []requestMessageItem) (r request) {
 	conf := config.OpenAI.Params
 	r.Model = conf.Model
 	r.Temperature = conf.Temperature
 	r.MaxTokens = conf.MaxTokens
 	r.Stream = true
-	r.Messages = []requestMessageItem{
-		{Role: "user", Content: msg},
-	}
 	if conf.Prompt != "" {
-		r.Messages = append(r.Messages, requestMessageItem{Role: "system", Content: conf.Prompt})
+		r.Messages = append(history, requestMessageItem{Role: "system", Content: conf.Prompt})
 	}
+	r.Messages = append(history, requestMessageItem{Role: "user", Content: msg})
 	return
 }
 

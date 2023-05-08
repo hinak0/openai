@@ -37,12 +37,7 @@ func main() {
 }
 
 func SetLog() {
-	dir := "./log"
-	file := dir + "/data.log"
-	_, err := os.Stat(dir)
-	if err != nil && os.IsNotExist(err) {
-		os.Mkdir(dir, 0755)
-	}
+	file := "log.log"
 	f, err := os.OpenFile(file, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0755)
 	if err != nil {
 		panic(err)

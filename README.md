@@ -6,8 +6,8 @@
 - [x] 支持用户语音输入。（要主动开启，设置与开发->接口权限->接收语音识别结果。已关注用户可能24小时内生效，可重新关注尝试）
 - [x] 设置代理
 - [x] prompt 提示、max_tokens、temperature 参数调节
-- [x] 关键词回复。
-- [ ] 上下文(待开发)
+- [x] 正则关键词回复(微信在开启服务器配置后，自带的关键字回复就不能用了)。
+- [x] 上下文(可以配置记录上下文对话数量上限)
 
 ### 三、配置&部署
 #### 前置准备
@@ -32,6 +32,17 @@ http:
   port: 80
   # 可选: 代理地址。需要你有本地或远程代理软件，举例: socks5://127.0.0.1:7890 或 7891
   proxy:
+
+session:
+  # 是否开启上下文
+  enable: true
+  # 存储后端，目前只支持redis
+  type: redis
+  addr: example.com:6379
+  passowrd:
+  database: 0
+  # 记录对话数量，越多越消耗token
+  track: 5
 
 openai:
   # 必填: KEY。 文档: https://platform.openai.com/account/api-keys
