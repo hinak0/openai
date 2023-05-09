@@ -1,7 +1,7 @@
 package config
 
 import (
-	"openai/internal/util"
+	"log"
 	"os"
 
 	"github.com/spf13/viper"
@@ -55,7 +55,7 @@ func init() {
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		util.Logger.Println("解析配置文件config.yaml失败:", err.Error())
+		log.Println("解析配置文件config.yaml失败:", err.Error())
 		os.Exit(0)
 	}
 
@@ -66,12 +66,12 @@ func init() {
 	viper.UnmarshalKey("wechat", &Wechat)
 
 	if OpenAI.Key == "" {
-		util.Logger.Println("OpenAI的Key不能为空")
+		log.Println("OpenAI的Key不能为空")
 		os.Exit(0)
 	}
 
 	if Wechat.Token == "" {
-		util.Logger.Println("未设置公众号token，公众号功能不可用")
+		log.Println("未设置公众号token，公众号功能不可用")
 	}
 
 	if Wechat.Timeout < 3 || Wechat.Timeout > 13 {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"openai/bootstrap"
 	"openai/internal/config"
@@ -9,6 +10,7 @@ import (
 )
 
 func main() {
+	util.InitLog()
 	r := bootstrap.New()
 
 	// 微信消息处理
@@ -18,8 +20,8 @@ func main() {
 	// 用于测试 curl "http://127.0.0.1:$PORT/test"
 	r.GET("/test", handler.Test)
 
-	util.Logger.Printf("程序开始监听 %s:%s \n", config.Http.Addr, config.Http.Port)
+	log.Printf("程序开始监听 %s:%s \n", config.Http.Addr, config.Http.Port)
 	if err := http.ListenAndServe(config.Http.Addr+":"+config.Http.Port, r); err != nil {
-		util.Logger.Fatalln(err)
+		log.Fatalln(err)
 	}
 }

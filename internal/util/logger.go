@@ -6,11 +6,7 @@ import (
 	"os"
 )
 
-var (
-	Logger *log.Logger
-)
-
-func init() {
+func InitLog() {
 	// 屏幕输出
 	stdout := os.Stdout
 	// 文件输出
@@ -19,5 +15,6 @@ func init() {
 		log.Fatalf("create log file failed: %v", err)
 	}
 
-	Logger = log.New(io.MultiWriter(stdout, logfile), "", log.Lshortfile|log.LstdFlags)
+	logwriter := io.MultiWriter(stdout, logfile)
+	log.SetOutput(logwriter)
 }

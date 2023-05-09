@@ -3,8 +3,8 @@ package openai
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"openai/internal/config"
-	"openai/internal/util"
 
 	"github.com/go-redis/redis/v8"
 )
@@ -16,7 +16,7 @@ var (
 
 func init() {
 	if config.Session.Type != "redis" {
-		util.Logger.Fatal("目前只支持redis存储!")
+		log.Fatal("目前只支持redis存储!")
 	}
 	ctx = context.Background()
 	client = redis.NewClient(&redis.Options{
@@ -27,7 +27,7 @@ func init() {
 
 	_, err := client.Ping(ctx).Result()
 	if err != nil {
-		util.Logger.Println("数据库错误 : ", err)
+		log.Println("数据库错误 : ", err)
 	}
 }
 
@@ -38,14 +38,14 @@ func getHistory(uid string) (history []requestMessageItem, err error) {
 	}
 	err = json.Unmarshal([]byte(val), &history)
 	if config.Debug {
-		util.Logger.Printf("获取 %s 聊天记录 %s: ", uid, history)
+		log.Printf("获取 %s 聊天记录 %s: ", uid, history)
 	}
 	return
 }
 
 func setHistory(uid string, history []requestMessageItem) error {
 	if config.Debug {
-		util.Logger.Printf("存储 %s 聊天记录 %s: ", uid, history)
+		log.Printf("存储 %s 聊天记录 %s: ", uid, history)
 	}
 	j, _ := json.Marshal(&history)
 	err := client.Set(ctx, uid, j, 0).Err()

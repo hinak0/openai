@@ -7,10 +7,10 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"openai/internal/config"
-	"openai/internal/util"
 	"runtime"
 	"strings"
 	"sync"
@@ -42,7 +42,7 @@ func Query(uid string, msg string, timeout time.Duration) (reply string) {
 	defer func() {
 		if err := recover(); err != nil {
 			_, file, line, _ := runtime.Caller(3)
-			util.Logger.Println("ERROR:", err, file, line)
+			log.Println("ERROR:", err, file, line)
 		}
 	}()
 	defer printLog(msg, &reply, start)
@@ -92,7 +92,7 @@ func Query(uid string, msg string, timeout time.Duration) (reply string) {
 			var err error
 			history, err = getHistory(uid)
 			if err != nil {
-				util.Logger.Println(err)
+				log.Println(err)
 				history = []requestMessageItem{}
 			}
 			// 保留最近n次对话
@@ -111,7 +111,7 @@ func Query(uid string, msg string, timeout time.Duration) (reply string) {
 		if config.Session.Enable {
 			err = setHistory(uid, history)
 			if err != nil {
-				util.Logger.Println(err)
+				log.Println(err)
 			}
 		}
 	} else {
@@ -191,7 +191,7 @@ func completions(u *user, history *[]requestMessageItem) error {
 
 			if err := recover(); err != nil {
 				_, file, line, _ := runtime.Caller(3)
-				util.Logger.Println("ERROR:", err, file, line)
+				log.Println("ERROR:", err, file, line)
 			}
 		}()
 
@@ -256,7 +256,7 @@ func postApi(msg string, history *[]requestMessageItem) (io.ReadCloser, error) {
 }
 
 func printLog(question string, answer *string, start time.Time) {
-	util.Logger.Printf(
+	log.Printf(
 		"用时:%ds \nQ: %s \nA: %s\n\n",
 		int(time.Since(start).Seconds()),
 		question,
