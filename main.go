@@ -14,9 +14,9 @@ func main() {
 	r := bootstrap.New()
 
 	// 微信消息处理
-	r.POST("/", handler.ReceiveMsg)
+	r.POST(config.Http.Path, handler.ReceiveMsg)
 	// 用于公众号自动验证
-	r.GET("/", handler.WechatCheck)
+	r.GET(config.Http.Path, handler.WechatCheck)
 	// 用于测试 curl "http://127.0.0.1:$PORT/test"
 	r.GET("/test", handler.Test)
 

@@ -27,7 +27,7 @@ func init() {
 
 	_, err := client.Ping(ctx).Result()
 	if err != nil {
-		log.Println("数据库错误 : ", err)
+		log.Fatal("数据库连接错误 : ", err)
 	}
 }
 
@@ -38,14 +38,14 @@ func getHistory(uid string) (history []requestMessageItem, err error) {
 	}
 	err = json.Unmarshal([]byte(val), &history)
 	if config.Debug {
-		log.Printf("获取 %s 聊天记录 %s: ", uid, history)
+		log.Printf("获取 %s 聊天记录 %s: \n", uid, history)
 	}
 	return
 }
 
 func setHistory(uid string, history []requestMessageItem) error {
 	if config.Debug {
-		log.Printf("存储 %s 聊天记录 %s: ", uid, history)
+		log.Printf("存储 %s 聊天记录 %s: \n", uid, history)
 	}
 	j, _ := json.Marshal(&history)
 	err := client.Set(ctx, uid, j, 0).Err()

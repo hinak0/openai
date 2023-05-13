@@ -13,6 +13,7 @@ var (
 	Http struct {
 		Addr  string
 		Port  string
+		Path  string
 		Proxy string
 	}
 
