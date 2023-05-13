@@ -50,7 +50,7 @@ AmbientCapabilities=CAP_NET_BIND_SERVICE CAP_NET_ADMIN
 WorkingDirectory=/root/openai/
 ExecStart=/root/openai/robot
 # 挂掉自动重启
-Restart=yes
+Restart=on-failure
 # 重启间隔
 RestartSec=20s
 
